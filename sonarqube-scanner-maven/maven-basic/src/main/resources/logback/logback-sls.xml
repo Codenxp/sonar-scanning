@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration scan="true" scanPeriod="60 seconds" debug="false">
+
+    <springProperty scope="context" name="log_project" source="ali.log-service.app-log.project"/>
+    <springProperty scope="context" name="log_store_info" source="ali.log-service.app-log.store.info"/>
+    <springProperty scope="context" name="log_store_error" source="ali.log-service.app-log.store.error"/>
+    <springProperty scope="context" name="log_audit_project" source="ali.log-service.audit-log.project"/>
+    <springProperty scope="context" name="log_audit_store" source="ali.log-service.audit-log.store.info"/>
+
+    <property name="LOG_PATTERN"
+              value="%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{64} - %msg%n"/>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${LOG_PATTERN}</pattern>
+            <charset class="java.nio.charset.Charset">UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <shutdownHook class="ch.qos.logback.core.hook.DelayingShutdownHook"/>
+
+    <appender name="sdk-log" class="com.aliyun.openservices.log.logback.LoghubAppender">
+        <endpoint>cn-shanghai.log.aliyuncs.com</endpoint>
+        <accessKeyId>LTAIPVLTH8g1chxB</accessKeyId>
+        <accessKeySecret>YRjJyMETsZUhoKGCDNXOwE9wB9n1s7</accessKeySecret>
+
+        <project>${log_project}</project>
+        <logStore>${log_store_info}</logStore>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+
+        <mdcFields>THREAD_ID,MDC_KEY</mdcFields>
+        <timeFormat>yyyy-MM-dd HH:mm:ss.SSS</timeFormat>
+        <timeZone>Asia/Shanghai</timeZone>
+    </appender>
+
+    <appender name="sdk-log-error" class="com.aliyun.openservices.log.logback.LoghubAppender">
+        <endpoint>cn-shanghai.log.aliyuncs.com</endpoint>
+        <accessKeyId>LTAIPVLTH8g1chxB</accessKeyId>
+        <accessKeySecret>YRjJyMETsZUhoKGCDNXOwE9wB9n1s7</accessKeySecret>
+
+        <project>${log_project}</project>
+        <logStore>${log_store_error}</logStore>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>ERROR</level>
+        </filter>
+
+        <mdcFields>THREAD_ID,MDC_KEY</mdcFields>
+        <timeFormat>yyyy-MM-dd HH:mm:ss.SSS</timeFormat>
+        <timeZone>Asia/Shanghai</timeZone>
+    </appender>
+
+    <appender name="ikea-shoppable-app-audit-store" class="com.aliyun.openservices.log.logback.LoghubAppender">
+        <endpoint>cn-shanghai.log.aliyuncs.com</endpoint>
+        <accessKeyId>LTAIPVLTH8g1chxB</accessKeyId>
+        <accessKeySecret>YRjJyMETsZUhoKGCDNXOwE9wB9n1s7</accessKeySecret>
+
+        <project>${log_audit_project}</project>
+        <logStore>${log_audit_store}</logStore>
+
+        <encoder>
+            <pattern>${LOG_PATTERN}</pattern>
+        </encoder>
+
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+
+        <mdcFields>THREAD_ID,MDC_KEY</mdcFields>
+        <timeFormat>yyyy-MM-dd HH:mm:ss.SSS</timeFormat>
+        <timeZone>Asia/Shanghai</timeZone>
+    </appender>
+
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+    <root level="INFO">
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="sdk-log"/>
+        <appender-ref ref="sdk-log-error"/>
+    </root>
+
+    <logger name="AUDIT" level="INFO" additivity="false">
+        <appender-ref ref="ikea-shoppable-app-audit-store"/>
+    </logger>
+
+    <logger name="cn.ikea.app" level="INFO"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="io.netty.handler" level="INFO"/>
+    <logger name="io.lettuce" level="WARN"/>
+
+</configuration>

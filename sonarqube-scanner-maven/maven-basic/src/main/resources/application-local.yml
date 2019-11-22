@@ -1,0 +1,105 @@
+server:
+  port: 8080
+  compression:
+    enabled: true
+
+spring:
+  application:
+    name: cn-app-service
+  jackson:
+    default-property-inclusion: non_null
+    deserialization:
+      FAIL_ON_UNKNOWN_PROPERTIES: false
+    serialization:
+      FAIL_ON_EMPTY_BEANS: false
+  messages:
+    basename: messages.identity,messages.account,messages.common,messages.product,messages.checkout,messages.rix,messages.iows,messages.idaas
+    encoding: UTF-8
+  data:
+    redis:
+      repositories:
+        enabled: false
+    mongodb:
+      uri: mongodb://root:ikea#2019@dds-uf67a8feae271d841874-pub.mongodb.rds.aliyuncs.com:3717,dds-uf67a8feae271d842393-pub.mongodb.rds.aliyuncs.com:3717/cn-app-dev?replicaSet=mgset-15643495
+  security:
+    user:
+      name: admin
+      password: ikea#2019
+      roles:
+        - ACTUATOR_ADMIN
+        - UPLOAD_ADMIN
+        - REFRESH_ADMIN
+
+management:
+  server:
+    port: 8009
+  endpoints:
+    web:
+      exposure:
+        include: health,refresh
+  endpoint:
+    shutdown:
+      enabled: true
+    health:
+      show-details: when_authorized
+      roles: ACTUATOR_ADMIN
+
+aliyun:
+  oss:
+    base-url: ${domain:https://res-dev.app.ikea.cn}
+    endpoint: ${endpoint:oss-cn-shanghai.aliyuncs.com}
+    access-key-id: ${accessKeyId:LTAIjEPgZvoQC5f3}
+    access-key-secret: ${accessKeySecret:1z0zCCAgkjgvGuGy0Q2I6WajMEMYy3}
+    bucket-name: ${bucketName:ikea-app-dev}
+
+ikea:
+  security.rsaPubKey: '{"kty":"RSA","kid":"5284653461972686632","alg":"RS256","n":"gePx5XoDT-fLB8EmJeSkS024DRb7PqVAKR7ah1UGt_w4kNUVht7fZrmiRB5QxWS_aMkzMCHMDgZigF1b8KC576DDQG_aUOontd8G3SbUtvNF-1yIuI2Q1plyxAyY0z02p0CXlgN9-GivpXOzeN__vOQQBQOZq1QSPx8iYAddAZjdSzjHWBTGpaPZECEvMo0N4oK2Eo_Gfykw0vZVVKruqUNkOfQgxcEO90jz-VrfEhpwoGfEKG1j_dYBiQKFtGUQcjlGxBMWecTWN8ujLxCQN8NgWrNauePxbrHIh9oe_oc5HM8xqMlut3ceq5ggIG_u5B_Mqt8Qbtww_3yhuyQ0YQ","e":"AQAB"}'
+  retail-unit: cn
+  language: zh
+  static-resource:
+    domain: https://res-dev.app.ikea.cn
+    version: 1
+  iows:
+    imageHost: https://www.ikea.cn
+    url: https://iows.ikea.cn
+    consumer: IKEAAPPA
+    contract: 40662
+  iows-auth:
+    url: https://iows.ikea.cn
+    consumer: IKEAAPPA
+    contract: 40662
+  ali:
+    url: https://prod.rec.ikea.cn
+  rix:
+    url: https://retail.api.ikea.com
+    x-client-id: c6ba5979-9403-4cd0-b16d-86996b7337e8
+  esales:
+    url: https://w1e1f7472.esales.ikea.cn
+    market: CNZH
+  checkout:
+    url: https://checkout-service.ocp.ingka.ikea.cn
+  csh:
+    url: https://csh.ikea.cn
+  mfs:
+    url: https://api.ingka.ikea.cn
+  internal-service:
+    idaas:
+      baseUrl: https://jdmmkxwmyj.api.aliyunidaas.com
+      enterpriseId: idaas-cn-mp91bhy9d01
+      enterpriseAuthId: idaas-cn-mp91bhy9d01lazy_loading
+      appKey: 34c24b0f713dd58a9653a85399e2fccbFrBQoD5trJY
+
+swagger.enable: true
+
+ali.log-service:
+  app-log:
+    project: cn-app-service-dev
+    store:
+      info: sdk-log
+      error: sdk-error
+  audit-log:
+    project: ikea-shoppable-app-ecs
+    store.info: ikea-shoppable-app-audit-store
+
+logging:
+  config: classpath:logback/logback-console.xml

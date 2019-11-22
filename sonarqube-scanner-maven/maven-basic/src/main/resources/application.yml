@@ -1,0 +1,14 @@
+spring.application:
+  group: cn.ikea.app
+  name: cn-app-service
+alibaba.acm:
+  endpoint: acm.aliyun.com
+  file-extension: yml
+  accessKey: LTAI4Fq9DQ13ZJPY7xMohgi1
+  secretKey: oQ6LRiDqhU4vVoiCBDAnlYFJUedMSm
+
+spring.profiles.active: env
+
+logging:
+  config: classpath:logback/logback-sls.xml
+
